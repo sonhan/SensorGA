@@ -108,26 +108,30 @@ public class WSN {
      * @param   popSize population size
      */
     private static ElitisticListPopulation randomPopulation(int len, int popSize) {
-        List<Chromosome> popList = new LinkedList();
+        List<Chromosome> popList = new ArrayList<>();
         
         for (int i = 0; i < popSize; i++) {
             List<Integer> rList= new ArrayList<Integer> (len);
             
+            // set each element randomly to 0 or 1
             for (int j = 0; j < len; j++)
                 rList.add(GeneticAlgorithm.getRandomGenerator().nextInt(2));
             
-            int m = 0;
+            // count the number of 1 and set to m
+            int M = 0;
             for (int e : rList)
-                if (e == 1) m++;
+                if (e == 1) M++;
             
+            // update 0 with a random number according to the algorithm
+            // random of (cj, cj + M)
             int c = 2;
             for (int j = 0; j < rList.size(); j++) {
                 int e = rList.get(j);
                 if (e == 1) continue;
                 else {
-                    int val = c + GeneticAlgorithm.getRandomGenerator().nextInt(m);
+                    int val = c + GeneticAlgorithm.getRandomGenerator().nextInt(M);
                     rList.set(j, val);
-                    c += m;
+                    c += M;
                 }
             }
                         
@@ -145,25 +149,32 @@ public class WSN {
      * @param   len     lenth of chromosome
      * @param   popSize population size
      */
-    private static ElitisticListPopulation randomPopulationWithFixedOA(int m, int len, int popSize) {
-        List<Chromosome> popList = new LinkedList();
+    private static ElitisticListPopulation randomPopulationWithFixedOA(int M, int len, int popSize) {
+        List<Chromosome> popList = new ArrayList();
         
         for (int i = 0; i < popSize; i++) {
             List<Integer> rList= new ArrayList<Integer> (len);
             
-            for (int j = 0; j < len; j++)
-                rList.add(GeneticAlgorithm.getRandomGenerator().nextInt(2));
+            for (int j = 0; j < len; j++)   rList.add(0);
+            int count = 0;
+            while (count < M) {
+                int index = GeneticAlgorithm.getRandomGenerator().nextInt(len);
+                if (rList.get(index) == 0) {
+                    rList.set(index, 1);
+                    count++;
+                }
+            }
             
-            
-            
+            // update 0 with a random number according to the algorithm
+            // random of (cj, cj + M)
             int c = 2;
             for (int j = 0; j < rList.size(); j++) {
                 int e = rList.get(j);
                 if (e == 1) continue;
                 else {
-                    int val = c + GeneticAlgorithm.getRandomGenerator().nextInt(m);
+                    int val = c + GeneticAlgorithm.getRandomGenerator().nextInt(M);
                     rList.set(j, val);
-                    c += m;
+                    c += M;
                 }
             }
                         
