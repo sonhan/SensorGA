@@ -164,6 +164,7 @@ public class SensorGeneticAlgorithm {
         while (nextGeneration.getPopulationSize() < nextGeneration.getPopulationLimit()) {
             // select parent chromosomes
             ChromosomePair pair = getSelectionPolicy().select(current);
+            //System.out.println("*****" + pair);
 
             // crossover?
             if (randGen.nextDouble() < getCrossoverRate()) {
@@ -188,18 +189,18 @@ public class SensorGeneticAlgorithm {
             }
         }
  
-        /*
+        //*
         
         List<Chromosome> list = ((ElitisticListPopulation) nextGeneration).getChromosomes();
         
-        System.out.println("Generation (iteration): " + generationsEvolved);
+        System.out.println("\nGeneration (iteration): " + (generationsEvolved + 1));
         int i = 0;
         for (Chromosome individual : list) {
-            System.out.println("Individual " + i++ + " = " + individual);
+            System.out.println("Individual " + ++i + " = " + individual);
             System.out.println("Solution = " + ((SensorIndividual) individual).solution());
         }
         
-        */
+        //*/
         
         return nextGeneration;
     }

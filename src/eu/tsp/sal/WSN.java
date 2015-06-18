@@ -35,13 +35,15 @@ import org.apache.commons.math3.genetics.TournamentSelection;
 public class WSN {
 
     // parameters for the GA
-    private static final int LENGTH = 128; // number of sensors
-    private static final int POPULATION_SIZE = 128;
-    private static final int NUM_GENERATIONS = 1000;
+    
+    private static final int LENGTH = 256; // number of sensors
+    private static final int OA_NUMBER = 30; // fixed number of OAs
+    private static final int POPULATION_SIZE = 10;
+    private static final int NUM_GENERATIONS = 50;
     private static final double ELITISM_RATE = 0.2;
     private static final double CROSSOVER_RATE = 0.8;
     private static final double MUTATION_RATE = 0.005;
-    private static final int TOURNAMENT_ARITY = 4; // should be less than POPULATION_SIZE
+    private static final int TOURNAMENT_ARITY = 2; // should be less than POPULATION_SIZE
 
     /**
      * Algorithm run on a number of sensors = LENGTH
@@ -69,14 +71,30 @@ public class WSN {
                 CROSSOVER_RATE, // all selected chromosomes will be recombined (=crosssover)
                 new SensorMutation(),
                 MUTATION_RATE,
-                new TournamentSelection(TOURNAMENT_ARITY)
+                new SensorTournamentSelection(TOURNAMENT_ARITY)
         );
 
         //assertEquals(0, ga.getGenerationsEvolved());
         //System.out.println(ga.getGenerationsEvolved());
 
         // initial population of POPULATION_SIZE SensorIndividual
-        Population initial = randomPopulation(LENGTH, POPULATION_SIZE);
+        //Population initial = randomPopulation(LENGTH, POPULATION_SIZE);
+        Population initial = randomPopulationWithFixedOA(OA_NUMBER, LENGTH, POPULATION_SIZE);
+        
+        
+        
+        List<Chromosome> list = ((ElitisticListPopulation) initial).getChromosomes();
+        
+        //System.out.println("Generation (iteration): " + initial);
+        int i = 0;
+        for (Chromosome individual : list) {
+            System.out.println("Individual " + i++ + " = " + individual);
+            System.out.println("Solution = " + ((SensorIndividual) individual).solution());
+            
+        }
+        
+        
+        
         
         // stopping conditions
         StoppingCondition stopCond = new FixedGenerationCount(NUM_GENERATIONS);
@@ -92,14 +110,39 @@ public class WSN {
         // best SensorIndividual from the final population
         Chromosome bestFinal = finalPopulation.getFittestChromosome();
         System.out.println("Best Individual in final population (highest fitness) =" + bestFinal);
-        System.out.println("Solution of the best individual = " + ((SensorIndividual) bestFinal).solution());
+        //System.out.println("Solution of the best individual = " + ((SensorIndividual) bestFinal).solution());
+        printSolution((SensorIndividual) bestFinal);
 
         // Assertion
         
         // assertTrue(bestFinal.compareTo(bestInitial) > 0);
         // assertEquals(NUM_GENERATIONS, ga.getGenerationsEvolved());
-        System.out.println(bestFinal.compareTo(bestInitial));
-        System.out.println(ga.getGenerationsEvolved());
+        System.out.println((bestFinal.compareTo(bestInitial) > 0)? 
+                "Final generation is better than the ancestors":
+                    "Final generation is worse than the ancestors!!!!");
+        //System.out.println(ga.getGenerationsEvolved());
+    }
+    
+    private static void printSolution(SensorIndividual in) {
+        List<List<Integer>> solutions = in.solution();
+        int count = 0;
+        for (int i = 0; i < solutions.size(); i++) {
+            
+            List<Integer> solution = solutions.get(i);
+            System.out.print(solution.get(0));
+            System.out.print("{");
+            
+            for (int j = 1; j < solution.size(); j++) {
+                System.out.print(solution.get(j));
+                if (j != solution.size() - 1) System.out.print(" ");
+            }
+            
+            count += solution.size() - 1;
+            System.out.println("}");
+        }
+        
+        System.out.println("Total OAs: " + solutions.size());
+        System.out.println("Total AAs: " + count);
     }
     
     /**
@@ -145,7 +188,7 @@ public class WSN {
     
     /**
      * Initializes a random population with a fixed number of 1s (m)
-     * @param   m       fixed number of OA
+     * @param   M       fixed number of OA
      * @param   len     lenth of chromosome
      * @param   popSize population size
      */
@@ -155,6 +198,7 @@ public class WSN {
         for (int i = 0; i < popSize; i++) {
             List<Integer> rList= new ArrayList<Integer> (len);
             
+            // Level 1 encoding with a fixed number of 1s
             for (int j = 0; j < len; j++)   rList.add(0);
             int count = 0;
             while (count < M) {
@@ -165,6 +209,7 @@ public class WSN {
                 }
             }
             
+            // Level 2 encoding
             // update 0 with a random number according to the algorithm
             // random of (cj, cj + M)
             int c = 2;

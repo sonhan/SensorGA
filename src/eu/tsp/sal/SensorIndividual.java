@@ -12,29 +12,29 @@ public class SensorIndividual extends SensorChromosome {
    private final int Eo = 2;    // energy used for communication from center to OA
    
    private int n;  // length of chronosome
-   private int m;  // number of 1s
+   private int M;  // number of 1s
    private int[][] encodes;
    public SensorIndividual(List<Integer> representation) {
        super(representation);
        n = representation.size();
-       m = 0;
+       M = 0;
        for (int e : representation) 
-           if (e == 1) m++;
+           if (e == 1) M++;
        
-       encodes = new int[m][n];
+       encodes = new int[M][n];
        
        int c = 2;
        for (int j = 0; j < representation.size(); j++) {
            int e = representation.get(j);
            encodes[0][j] = e;
-           for (int i = 1; i < m; i++) {
+           for (int i = 1; i < M; i++) {
                if (e == 1) encodes[i][j] = 1;
                else {
-                   int val = c + GeneticAlgorithm.getRandomGenerator().nextInt(m);
+                   int val = c + GeneticAlgorithm.getRandomGenerator().nextInt(M);
                    encodes[i][j] = val;
                }
            }
-           if (e != 1) c += m;
+           if (e != 1) c += M;
        }
        
        //System.out.println("(n, m) = (" + n + ", " + m + ")");
@@ -49,7 +49,7 @@ public class SensorIndividual extends SensorChromosome {
     * e.g., [6,0,1] >> 6 {0,1}: node 6 is OA, node 0 and node 1 communicate via node 6
     */
    public List<List<Integer>> solution() {
-       List<List<Integer>> solution = new ArrayList<List<Integer>>(m);
+       List<List<Integer>> solution = new ArrayList<List<Integer>>(M);
        for (int i = 0; i < n; i++) {
            if (getRepresentation().get(i) != 1) continue;
            List<Integer> list = new ArrayList<>();
@@ -69,7 +69,7 @@ public class SensorIndividual extends SensorChromosome {
    private int max(int col) {
        int max = 0;
        int maxVal = encodes[0][col];
-       for (int i = 1; i < m; i++)
+       for (int i = 1; i < M; i++)
            if (encodes[i][col] > maxVal) { 
                max = i; 
                maxVal = encodes[i][col]; 
@@ -86,7 +86,7 @@ public class SensorIndividual extends SensorChromosome {
    public double fitness() {
        //Emax -= Er;
        Emax = GeneticAlgorithm.getRandomGenerator().nextInt(1000);
-       return m * (Emax - (n-m) * Er - Eo);       
+       return M * (Emax - (n-M) * Er - Eo);       
    }
 
    @Override
