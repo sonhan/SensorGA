@@ -189,19 +189,9 @@ public class SensorGeneticAlgorithm {
             }
         }
  
-        //*
-        
-        List<Chromosome> list = ((ElitisticListPopulation) nextGeneration).getChromosomes();
-        
         System.out.println("\nGeneration (iteration): " + (generationsEvolved + 1));
-        int i = 0;
-        for (Chromosome individual : list) {
-            System.out.println("Individual " + ++i + " = " + individual);
-            System.out.println("Solution = " + ((SensorIndividual) individual).solution());
-        }
-        
-        //*/
-        
+        WSN.printPopulation(nextGeneration);
+                
         return nextGeneration;
     }
 

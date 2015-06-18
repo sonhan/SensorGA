@@ -49,7 +49,7 @@ public class WSN {
      * Algorithm run on a number of sensors = LENGTH
      * 
      * Population has POPULATION_SIZE individuals (SensorIndividual class)
-     * each individual has LENTH genes (~ sensor)
+     * each individual has LENGTH genes (~ sensor)
      * 
      *  
      * 
@@ -81,27 +81,14 @@ public class WSN {
         //Population initial = randomPopulation(LENGTH, POPULATION_SIZE);
         Population initial = randomPopulationWithFixedOA(OA_NUMBER, LENGTH, POPULATION_SIZE);
         
-        
-        
-        List<Chromosome> list = ((ElitisticListPopulation) initial).getChromosomes();
-        
-        //System.out.println("Generation (iteration): " + initial);
-        int i = 0;
-        for (Chromosome individual : list) {
-            System.out.println("Individual " + i++ + " = " + individual);
-            System.out.println("Solution = " + ((SensorIndividual) individual).solution());
-            
-        }
-        
-        
-        
+        printPopulation(initial);        
         
         // stopping conditions
         StoppingCondition stopCond = new FixedGenerationCount(NUM_GENERATIONS);
 
         // best initial chromosome
         Chromosome bestInitial = initial.getFittestChromosome();
-        System.out.println("Best Individual in initial population (highest fitness) =" + bestInitial);
+        System.out.println("Best Individual in initial population (highest fitness) = " + bestInitial);
         System.out.println("Solution  of the best individual = " + ((SensorIndividual) bestInitial).solution());
         
         // run the algorithm
@@ -109,7 +96,7 @@ public class WSN {
 
         // best SensorIndividual from the final population
         Chromosome bestFinal = finalPopulation.getFittestChromosome();
-        System.out.println("Best Individual in final population (highest fitness) =" + bestFinal);
+        System.out.println("\nBest Individual in final population (highest fitness) = " + bestFinal);
         //System.out.println("Solution of the best individual = " + ((SensorIndividual) bestFinal).solution());
         printSolution((SensorIndividual) bestFinal);
 
@@ -118,13 +105,22 @@ public class WSN {
         // assertTrue(bestFinal.compareTo(bestInitial) > 0);
         // assertEquals(NUM_GENERATIONS, ga.getGenerationsEvolved());
         System.out.println((bestFinal.compareTo(bestInitial) > 0)? 
-                "Final generation is better than the ancestors":
-                    "Final generation is worse than the ancestors!!!!");
+                "Final generation is better than the initial":
+                    "Final generation is worse than the initial!!!!");
         //System.out.println(ga.getGenerationsEvolved());
     }
     
-    private static void printSolution(SensorIndividual in) {
-        List<List<Integer>> solutions = in.solution();
+    public static void printPopulation(Population population) {
+        List<Chromosome> list = ((ElitisticListPopulation) population).getChromosomes();
+        int i = 0;
+        for (Chromosome individual : list) {
+            System.out.println("Individual " + ++i + " = " + individual);
+            System.out.println("Solution = " + ((SensorIndividual) individual).solution());
+        }
+    }
+    
+    public static void printSolution(SensorIndividual individual) {
+        List<List<Integer>> solutions = individual.solution();
         int count = 0;
         for (int i = 0; i < solutions.size(); i++) {
             
@@ -141,7 +137,7 @@ public class WSN {
             System.out.println("}");
         }
         
-        System.out.println("Total OAs: " + solutions.size());
+        System.out.println("\nTotal OAs: " + solutions.size());
         System.out.println("Total AAs: " + count);
     }
     
@@ -229,8 +225,6 @@ public class WSN {
         }
         return new ElitisticListPopulation(popList, popList.size(), ELITISM_RATE);
     }
-    
-    
     
     public static void print2DArray(int[][] a) {
         for (int i = 0; i < a.length; i++)

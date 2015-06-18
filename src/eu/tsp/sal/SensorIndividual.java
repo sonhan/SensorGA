@@ -1,11 +1,16 @@
 package eu.tsp.sal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.math3.genetics.GeneticAlgorithm;
 
+/**
+ * Individual for the algorithm
+ * 
+ * @author Son Han
+ *
+ */
 public class SensorIndividual extends SensorChromosome {
    private int Emax = 1000;     // current energy level of individual
    private final int Er = 1;    // energy used for communication from individual to OA
