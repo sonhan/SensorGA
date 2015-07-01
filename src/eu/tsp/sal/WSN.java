@@ -37,7 +37,7 @@ public class WSN {
     // parameters for the GA
     
     private static final int LENGTH = 256; // number of sensors
-    private static final int OA_NUMBER = 30; // fixed number of OAs
+    private static final int INITIAL_OA_NUMBER = 30; // fixed number of OAs
     private static final int POPULATION_SIZE = 10;
     private static final int NUM_GENERATIONS = 50;
     private static final double ELITISM_RATE = 0.2;
@@ -79,7 +79,7 @@ public class WSN {
 
         // initial population of POPULATION_SIZE SensorIndividual
         //Population initial = randomPopulation(LENGTH, POPULATION_SIZE);
-        Population initial = randomPopulationWithFixedOA(OA_NUMBER, LENGTH, POPULATION_SIZE);
+        Population initial = randomPopulationWithFixedOA(INITIAL_OA_NUMBER, LENGTH, POPULATION_SIZE);
         
         printPopulation(initial);        
         
@@ -161,19 +161,6 @@ public class WSN {
             for (int e : rList)
                 if (e == 1) M++;
             
-            // update 0 with a random number according to the algorithm
-            // random of (cj, cj + M)
-            int c = 2;
-            for (int j = 0; j < rList.size(); j++) {
-                int e = rList.get(j);
-                if (e == 1) continue;
-                else {
-                    int val = c + GeneticAlgorithm.getRandomGenerator().nextInt(M);
-                    rList.set(j, val);
-                    c += M;
-                }
-            }
-                        
             Chromosome randChrom = new SensorIndividual(rList);
             popList.add(randChrom);
             
@@ -202,20 +189,6 @@ public class WSN {
                 if (rList.get(index) == 0) {
                     rList.set(index, 1);
                     count++;
-                }
-            }
-            
-            // Level 2 encoding
-            // update 0 with a random number according to the algorithm
-            // random of (cj, cj + M)
-            int c = 2;
-            for (int j = 0; j < rList.size(); j++) {
-                int e = rList.get(j);
-                if (e == 1) continue;
-                else {
-                    int val = c + GeneticAlgorithm.getRandomGenerator().nextInt(M);
-                    rList.set(j, val);
-                    c += M;
                 }
             }
                         

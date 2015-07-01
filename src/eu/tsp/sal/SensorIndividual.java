@@ -18,34 +18,31 @@ public class SensorIndividual extends SensorChromosome {
    
    private int n;  // length of chronosome
    private int M;  // number of 1s
-   private int[][] encodes;
+   private List<List<Integer>> solution = new ArrayList<List<Integer>>(M);
+   
    public SensorIndividual(List<Integer> representation) {
        super(representation);
        n = representation.size();
        M = 0;
-       for (int e : representation) 
-           if (e == 1) M++;
+       List<Integer> oaList = new ArrayList<>();
        
-       encodes = new int[M][n];
-       
-       int c = 2;
-       for (int j = 0; j < representation.size(); j++) {
-           int e = representation.get(j);
-           encodes[0][j] = e;
-           for (int i = 1; i < M; i++) {
-               if (e == 1) encodes[i][j] = 1;
-               else {
-                   int val = c + GeneticAlgorithm.getRandomGenerator().nextInt(M);
-                   encodes[i][j] = val;
-               }
-           }
-           if (e != 1) c += M;
+       // Add each OA (index of 1) to the head of each list
+       for (int i = 0; i < n; i++) {
+           if (getRepresentation().get(i) != 1) continue;
+           
+           M++;
+           oaList.add(i);
+           
+           List<Integer> list = new ArrayList<>();
+           list.add(i);
+           solution.add(list);
        }
        
-       //System.out.println("(n, m) = (" + n + ", " + m + ")");
-       //WSN.print2DArray(encodes);
-       //System.out.println("Chromosome =" + this);
-       //System.out.println("Solution = " + solution());
+       for (int i = 0; i < n; i++) {
+           if (getRepresentation().get(i) == 1) continue;
+           int oaIndex = Emax = GeneticAlgorithm.getRandomGenerator().nextInt(M);
+           solution.get(oaIndex).add(i);
+       }
    }
 
    /**
@@ -54,33 +51,9 @@ public class SensorIndividual extends SensorChromosome {
     * e.g., [6,0,1] >> 6 {0,1}: node 6 is OA, node 0 and node 1 communicate via node 6
     */
    public List<List<Integer>> solution() {
-       List<List<Integer>> solution = new ArrayList<List<Integer>>(M);
-       for (int i = 0; i < n; i++) {
-           if (getRepresentation().get(i) != 1) continue;
-           List<Integer> list = new ArrayList<>();
-           list.add(i);
-           solution.add(list);
-       }
-       
-       for (int i = 0; i < n; i++) {
-           if (getRepresentation().get(i) == 1) continue;
-           int max = max(i);
-           solution.get(max).add(i);
-       }
-       
        return solution;
    }
    
-   private int max(int col) {
-       int max = 0;
-       int maxVal = encodes[0][col];
-       for (int i = 1; i < M; i++)
-           if (encodes[i][col] > maxVal) { 
-               max = i; 
-               maxVal = encodes[i][col]; 
-           }
-       return max;
-   }
    /**
     * Returns energy left after doing all the communications:
     *  from AAs to OAs (Er)
@@ -99,4 +72,11 @@ public class SensorIndividual extends SensorChromosome {
        return new SensorIndividual(chromosomeRepresentation);
    }
    
+   public static void main (String[] args) {
+       List<Integer> rep = new ArrayList<>();
+       rep.add(0);rep.add(1);rep.add(1);rep.add(0);rep.add(0);rep.add(1);rep.add(0);rep.add(0);
+       
+       SensorIndividual in = new SensorIndividual(rep);
+       WSN.printSolution(in);
+   }
 }
