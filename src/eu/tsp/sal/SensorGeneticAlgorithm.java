@@ -189,8 +189,10 @@ public class SensorGeneticAlgorithm {
             }
         }
  
-        System.out.println("\nGeneration (iteration): " + (generationsEvolved + 1));
-        WSN.printPopulation(nextGeneration);
+        //System.out.println("\nGeneration (iteration): " + (generationsEvolved + 1));
+        //WSN.printPopulation(nextGeneration);
+        
+        System.out.println(nextGeneration.getFittestChromosome().fitness());
                 
         return nextGeneration;
     }

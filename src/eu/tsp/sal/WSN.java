@@ -38,7 +38,7 @@ public class WSN {
     
     private static final int LENGTH = 256; // number of sensors
     private static final int INITIAL_OA_NUMBER = 30; // fixed number of OAs
-    private static final int POPULATION_SIZE = 10;
+    private static final int POPULATION_SIZE = 1000;
     private static final int NUM_GENERATIONS = 50;
     private static final double ELITISM_RATE = 0.2;
     private static final double CROSSOVER_RATE = 0.8;
@@ -81,7 +81,7 @@ public class WSN {
         //Population initial = randomPopulation(LENGTH, POPULATION_SIZE);
         Population initial = randomPopulationWithFixedOA(INITIAL_OA_NUMBER, LENGTH, POPULATION_SIZE);
         
-        printPopulation(initial);        
+        //printPopulation(initial);        
         
         // stopping conditions
         StoppingCondition stopCond = new FixedGenerationCount(NUM_GENERATIONS);
@@ -96,9 +96,9 @@ public class WSN {
 
         // best SensorIndividual from the final population
         Chromosome bestFinal = finalPopulation.getFittestChromosome();
-        System.out.println("\nBest Individual in final population (highest fitness) = " + bestFinal);
+        //System.out.println("\nBest Individual in final population (highest fitness) = " + bestFinal);
         //System.out.println("Solution of the best individual = " + ((SensorIndividual) bestFinal).solution());
-        printSolution((SensorIndividual) bestFinal);
+        //printSolution((SensorIndividual) bestFinal);
 
         // Assertion
         

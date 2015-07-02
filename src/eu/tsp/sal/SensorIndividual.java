@@ -9,15 +9,27 @@ import org.apache.commons.math3.genetics.GeneticAlgorithm;
  * Individual for the algorithm
  * 
  * @author Son Han
- *
+ *  *
  */
 public class SensorIndividual extends SensorChromosome {
-   private int Emax = 1000;     // current energy level of individual
-   private final int Er = 1;    // energy used for communication from individual to OA
+    
+   
+   private final int Emax_THRESHOLD = 13320;     // current energy level of individual
+   private final int Er = 50;    // energy used for communication from individual to OA
    private final int Eo = 2;    // energy used for communication from center to OA
    
    private int n;  // length of chronosome
    private int M;  // number of 1s
+   
+   
+   private final int Mmax = 7200; 
+   private final int NA = 3;    
+   private final int Mo = 10;  
+   
+   private final double W1 = 0.5; 
+   private final double W2 = 0.5;    
+    
+   
    private List<List<Integer>> solution = new ArrayList<List<Integer>>(M);
    
    public SensorIndividual(List<Integer> representation) {
@@ -40,7 +52,7 @@ public class SensorIndividual extends SensorChromosome {
        
        for (int i = 0; i < n; i++) {
            if (getRepresentation().get(i) == 1) continue;
-           int oaIndex = Emax = GeneticAlgorithm.getRandomGenerator().nextInt(M);
+           int oaIndex = GeneticAlgorithm.getRandomGenerator().nextInt(M);
            solution.get(oaIndex).add(i);
        }
    }
@@ -54,6 +66,13 @@ public class SensorIndividual extends SensorChromosome {
        return solution;
    }
    
+   
+   /**
+    * fitness function 
+    */
+   public double fitness() {
+       return W1 * fitness_energy() + W2 * fitness_mem();       
+   }
    /**
     * Returns energy left after doing all the communications:
     *  from AAs to OAs (Er)
@@ -61,10 +80,17 @@ public class SensorIndividual extends SensorChromosome {
     *  
     *  Emax = 
     */
-   public double fitness() {
+   public double fitness_energy() {
        //Emax -= Er;
-       Emax = GeneticAlgorithm.getRandomGenerator().nextInt(1000);
-       return M * (Emax - (n-M) * Er - Eo);       
+       // Current energy level
+       int Emax = Emax_THRESHOLD/2 + GeneticAlgorithm.getRandomGenerator().nextInt(Emax_THRESHOLD/2);
+       return M * (Emax - Eo) - (n-M) * Er ;       
+   }
+   
+   public double fitness_mem() {
+       // Current memory
+       int Mj = 50 + GeneticAlgorithm.getRandomGenerator().nextInt(70);
+       return M * (Mmax - NA * Mj - Mo);       
    }
 
    @Override
