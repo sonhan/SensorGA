@@ -14,9 +14,9 @@ import org.apache.commons.math3.genetics.GeneticAlgorithm;
 public class SensorIndividual extends SensorChromosome {
     
    
-   private final int Emax_THRESHOLD = 13320;     // current energy level of individual
+   private final int Emax_THRESHOLD = 9590;     // current energy level of individual
    private final int Er = 50;    // energy used for communication from individual to OA
-   private final int Eo = 2;    // energy used for communication from center to OA
+   private final int Eo = 80;    // energy used for communication from center to OA
    
    private int n;  // length of chronosome
    private int M;  // number of 1s
